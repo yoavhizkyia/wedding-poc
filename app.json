@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "רשימת מוזמנים",
+    "slug": "wedding-contacts",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#FFFAF5"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yoavh.weddingcontacts",
+      "infoPlist": {
+        "NSContactsUsageDescription": "האפליקציה דורשת גישה לאנשי הקשר כדי לייבא את רשימת המוזמנים לחתונה."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#FFFAF5"
+      },
+      "package": "com.yoavh.weddingcontacts",
+      "permissions": ["android.permission.READ_CONTACTS"]
+    },
+    "plugins": [
+      [
+        "expo-contacts",
+        {
+          "contactsPermission": "האפליקציה דורשת גישה לאנשי הקשר כדי לייבא את רשימת המוזמנים."
+        }
+      ]
+    ]
+  }
+}
