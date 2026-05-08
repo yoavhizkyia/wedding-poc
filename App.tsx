@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { I18nManager, View, ActivityIndicator, StyleSheet, Text } from 'react-native';
+import { I18nManager, Platform, View, ActivityIndicator, StyleSheet, Text } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
@@ -7,7 +7,12 @@ import AppNavigator from './src/navigation/AppNavigator';
 import { ContactsProvider } from './src/storage/ContactsContext';
 import { colors } from './src/theme/colors';
 
-if (!I18nManager.isRTL) {
+if (Platform.OS === 'web') {
+  if (typeof document !== 'undefined') {
+    document.documentElement.setAttribute('dir', 'rtl');
+    document.documentElement.setAttribute('lang', 'he');
+  }
+} else if (!I18nManager.isRTL) {
   try {
     I18nManager.allowRTL(true);
     I18nManager.forceRTL(true);

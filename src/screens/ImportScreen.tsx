@@ -9,6 +9,7 @@ import {
   Alert,
   TouchableOpacity,
   Pressable,
+  Platform,
 } from 'react-native';
 import * as Contacts from 'expo-contacts';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -34,6 +35,28 @@ interface ImportableContact {
 type PermissionState = 'unknown' | 'granted' | 'denied';
 
 export default function ImportScreen({ navigation }: Props) {
+  if (Platform.OS === 'web') {
+    return <WebUnsupported onBack={() => navigation.goBack()} onAdd={() => navigation.navigate('Contacts')} />;
+  }
+  return <NativeImport navigation={navigation} />;
+}
+
+function WebUnsupported({ onBack, onAdd }: { onBack: () => void; onAdd: () => void }) {
+  return (
+    <View style={styles.center}>
+      <Text style={styles.permEmoji}>📱</Text>
+      <Text style={styles.permTitle}>ייבוא זמין רק במובייל</Text>
+      <Text style={styles.permText}>
+        הדפדפן אינו מאפשר גישה לאנשי הקשר במכשיר. לייבוא רשימה, פתחי את האפליקציה בטלפון.
+        בגרסת הוויב ניתן להוסיף, לערוך, למחוק ולייצא רשימה.
+      </Text>
+      <PrimaryButton title="הוסיפי איש קשר ידנית" onPress={onAdd} style={{ marginTop: 18 }} />
+      <PrimaryButton title="חזרה" variant="ghost" onPress={onBack} style={{ marginTop: 8 }} />
+    </View>
+  );
+}
+
+function NativeImport({ navigation }: Props) {
   const { addMany } = useContacts();
   const [permission, setPermission] = useState<PermissionState>('unknown');
   const [loading, setLoading] = useState(false);
