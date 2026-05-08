@@ -1,8 +1,14 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
-import { Contact, SIDE_LABELS, GROUP_LABELS } from '../types/Contact';
-import { colors } from '../theme/colors';
-import { formatPhoneForDisplay } from '../utils/phoneNormalizer';
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
+import { Contact, SIDE_LABELS, GROUP_LABELS } from "../types/Contact";
+import { colors } from "../theme/colors";
+import { formatPhoneForDisplay } from "../utils/phoneNormalizer";
 
 interface Props {
   contact: Contact;
@@ -22,13 +28,13 @@ export function ContactItem({
   onToggleSelect,
 }: Props) {
   const sideColor =
-    contact.side === 'groom'
+    contact.side === "groom"
       ? colors.groom
-      : contact.side === 'bride'
-      ? colors.bride
-      : contact.side === 'both'
-      ? colors.both
-      : colors.unknown;
+      : contact.side === "bride"
+        ? colors.bride
+        : contact.side === "both"
+          ? colors.both
+          : colors.unknown;
 
   return (
     <Pressable
@@ -41,7 +47,11 @@ export function ContactItem({
       ]}
     >
       {selectionMode && (
-        <TouchableOpacity onPress={onToggleSelect} style={styles.checkbox} hitSlop={10}>
+        <TouchableOpacity
+          onPress={onToggleSelect}
+          style={styles.checkbox}
+          hitSlop={10}
+        >
           <View style={[styles.checkboxBox, selected && styles.checkboxBoxOn]}>
             {selected && <Text style={styles.checkboxMark}>✓</Text>}
           </View>
@@ -53,7 +63,9 @@ export function ContactItem({
       <View style={styles.body}>
         <View style={styles.line1}>
           <Text style={styles.name} numberOfLines={1}>
-            {contact.fullName || `${contact.firstName} ${contact.lastName}`.trim() || '—'}
+            {contact.fullName ||
+              `${contact.firstName} ${contact.lastName}`.trim() ||
+              "—"}
           </Text>
           <View style={styles.flagsRow}>
             {contact.isInvalid && (
@@ -69,8 +81,10 @@ export function ContactItem({
           </View>
         </View>
 
-        <Text style={[styles.phone, contact.isInvalid && { color: colors.error }]}>
-          {formatPhoneForDisplay(contact.phone) || 'אין מספר'}
+        <Text
+          style={[styles.phone, contact.isInvalid && { color: colors.error }]}
+        >
+          {formatPhoneForDisplay(contact.phone) || "אין מספר"}
         </Text>
 
         <View style={styles.line3}>
@@ -78,7 +92,9 @@ export function ContactItem({
             <Text style={styles.tagText}>{SIDE_LABELS[contact.side]}</Text>
           </View>
           <View style={[styles.tag, styles.tagGroup]}>
-            <Text style={styles.tagTextDark}>{GROUP_LABELS[contact.group]}</Text>
+            <Text style={styles.tagTextDark}>
+              {GROUP_LABELS[contact.group]}
+            </Text>
           </View>
           {!!contact.notes && (
             <Text style={styles.notes} numberOfLines={1}>
@@ -93,12 +109,12 @@ export function ContactItem({
 
 const styles = StyleSheet.create({
   row: {
-    flexDirection: 'row',
+    flexDirection: "row",
     backgroundColor: colors.card,
     borderRadius: 12,
     marginHorizontal: 12,
     marginBottom: 8,
-    overflow: 'hidden',
+    overflow: "hidden",
     borderWidth: 1,
     borderColor: colors.border,
   },
@@ -111,7 +127,7 @@ const styles = StyleSheet.create({
   },
   checkbox: {
     paddingStart: 12,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   checkboxBox: {
     width: 24,
@@ -119,15 +135,15 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     borderWidth: 2,
     borderColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   checkboxBoxOn: {
     backgroundColor: colors.primary,
   },
   checkboxMark: {
-    color: '#fff',
-    fontWeight: '800',
+    color: "#fff",
+    fontWeight: "800",
     fontSize: 14,
   },
   sideBar: {
@@ -138,18 +154,18 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   line1: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   name: {
     flex: 1,
     fontSize: 17,
-    fontWeight: '700',
+    fontWeight: "700",
     color: colors.text,
   },
   flagsRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   flag: {
     paddingHorizontal: 8,
@@ -158,9 +174,9 @@ const styles = StyleSheet.create({
     marginStart: 6,
   },
   flagText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   phone: {
     fontSize: 15,
@@ -168,8 +184,8 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   line3: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 8,
   },
   tag: {
@@ -182,14 +198,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secondary,
   },
   tagText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   tagTextDark: {
     color: colors.text,
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   notes: {
     flex: 1,

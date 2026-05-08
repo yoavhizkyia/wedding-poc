@@ -1,6 +1,6 @@
-import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
-import { colors } from '../theme/colors';
+import React from "react";
+import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
+import { colors } from "../theme/colors";
 
 interface Props {
   label: string;
@@ -12,7 +12,7 @@ interface Props {
 
 export function Chip({ label, selected, onPress, color, count }: Props) {
   const bg = selected ? color || colors.primary : colors.card;
-  const fg = selected ? '#fff' : colors.text;
+  const fg = selected ? "#fff" : colors.text;
   const borderCol = selected ? bg : colors.border;
 
   return (
@@ -23,8 +23,17 @@ export function Chip({ label, selected, onPress, color, count }: Props) {
       disabled={!onPress}
     >
       <Text style={[styles.text, { color: fg }]}>{label}</Text>
-      {typeof count === 'number' && (
-        <View style={[styles.badge, { backgroundColor: selected ? 'rgba(255,255,255,0.25)' : colors.secondary }]}>
+      {typeof count === "number" && (
+        <View
+          style={[
+            styles.badge,
+            {
+              backgroundColor: selected
+                ? "rgba(255,255,255,0.25)"
+                : colors.secondary,
+            },
+          ]}
+        >
           <Text style={[styles.badgeText, { color: fg }]}>{count}</Text>
         </View>
       )}
@@ -34,8 +43,8 @@ export function Chip({ label, selected, onPress, color, count }: Props) {
 
 const styles = StyleSheet.create({
   chip: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 8,
     paddingHorizontal: 14,
     borderRadius: 20,
@@ -45,7 +54,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   badge: {
     marginStart: 6,
@@ -53,11 +62,11 @@ const styles = StyleSheet.create({
     height: 22,
     paddingHorizontal: 6,
     borderRadius: 11,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   badgeText: {
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: "700",
   },
 });

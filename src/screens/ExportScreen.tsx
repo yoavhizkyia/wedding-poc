@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -6,15 +6,15 @@ import {
   ScrollView,
   Alert,
   Pressable,
-} from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation/AppNavigator';
-import { colors } from '../theme/colors';
-import { useContacts } from '../storage/ContactsContext';
-import { PrimaryButton } from '../components/PrimaryButton';
-import { exportContactsToExcel } from '../utils/excelExporter';
+} from "react-native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../navigation/AppNavigator";
+import { colors } from "../theme/colors";
+import { useContacts } from "../storage/ContactsContext";
+import { PrimaryButton } from "../components/PrimaryButton";
+import { exportContactsToExcel } from "../utils/excelExporter";
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Export'>;
+type Props = NativeStackScreenProps<RootStackParamList, "Export">;
 
 export default function ExportScreen({ navigation }: Props) {
   const { contacts } = useContacts();
@@ -32,7 +32,7 @@ export default function ExportScreen({ navigation }: Props) {
 
   const handleExport = async () => {
     if (toExport.length === 0) {
-      Alert.alert('ייצוא', 'אין אנשי קשר לייצוא');
+      Alert.alert("ייצוא", "אין אנשי קשר לייצוא");
       return;
     }
     setExporting(true);
@@ -40,9 +40,9 @@ export default function ExportScreen({ navigation }: Props) {
     setExporting(false);
 
     if (result.success) {
-      Alert.alert('הצלחה', `יוצאו ${result.rowsExported} אנשי קשר`);
+      Alert.alert("הצלחה", `יוצאו ${result.rowsExported} אנשי קשר`);
     } else {
-      Alert.alert('שגיאה', result.error || 'שגיאה לא ידועה בייצוא');
+      Alert.alert("שגיאה", result.error || "שגיאה לא ידועה בייצוא");
     }
   };
 
@@ -146,34 +146,34 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secondary,
     borderRadius: 16,
     padding: 18,
-    alignItems: 'center',
+    alignItems: "center",
   },
   headerEmoji: {
     fontSize: 40,
   },
   headerTitle: {
     fontSize: 22,
-    fontWeight: '800',
+    fontWeight: "800",
     color: colors.text,
     marginTop: 4,
   },
   headerSubtitle: {
     fontSize: 13,
     color: colors.textMuted,
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: 4,
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
     color: colors.text,
     marginTop: 18,
     marginBottom: 8,
-    textAlign: 'right',
+    textAlign: "right",
   },
   toggleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: colors.card,
     paddingVertical: 14,
     paddingHorizontal: 14,
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: colors.text,
     marginStart: 12,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   checkbox: {
     width: 24,
@@ -195,15 +195,15 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     borderWidth: 2,
     borderColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   checkboxOn: {
     backgroundColor: colors.primary,
   },
   checkboxMark: {
-    color: '#fff',
-    fontWeight: '800',
+    color: "#fff",
+    fontWeight: "800",
     fontSize: 14,
   },
   card: {
@@ -222,15 +222,15 @@ const styles = StyleSheet.create({
   },
   colName: {
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: "600",
     color: colors.text,
-    textAlign: 'right',
+    textAlign: "right",
   },
   summaryCard: {
     backgroundColor: colors.card,
     borderRadius: 14,
     padding: 18,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 18,
     marginBottom: 16,
     borderWidth: 1,
@@ -238,13 +238,13 @@ const styles = StyleSheet.create({
   },
   summaryNumber: {
     fontSize: 38,
-    fontWeight: '800',
+    fontWeight: "800",
     color: colors.primary,
   },
   summaryLabel: {
     fontSize: 14,
     color: colors.text,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   summaryNote: {
     fontSize: 12,
@@ -256,11 +256,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 12,
     marginTop: 20,
-    alignItems: 'center',
+    alignItems: "center",
   },
   privacyText: {
     fontSize: 13,
     color: colors.text,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });

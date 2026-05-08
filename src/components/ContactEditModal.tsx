@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   View,
@@ -10,7 +10,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-} from 'react-native';
+} from "react-native";
 import {
   Contact,
   Side,
@@ -19,11 +19,11 @@ import {
   GROUP_LABELS,
   SIDE_OPTIONS,
   GROUP_OPTIONS,
-} from '../types/Contact';
-import { colors } from '../theme/colors';
-import { PrimaryButton } from './PrimaryButton';
-import { Chip } from './Chip';
-import { isValidIsraeliMobile, normalizePhone } from '../utils/phoneNormalizer';
+} from "../types/Contact";
+import { colors } from "../theme/colors";
+import { PrimaryButton } from "./PrimaryButton";
+import { Chip } from "./Chip";
+import { isValidIsraeliMobile, normalizePhone } from "../utils/phoneNormalizer";
 
 interface Props {
   visible: boolean;
@@ -33,13 +33,19 @@ interface Props {
   onDelete?: () => void;
 }
 
-export function ContactEditModal({ visible, contact, onClose, onSave, onDelete }: Props) {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [side, setSide] = useState<Side>('unknown');
-  const [group, setGroup] = useState<Group>('other');
-  const [notes, setNotes] = useState('');
+export function ContactEditModal({
+  visible,
+  contact,
+  onClose,
+  onSave,
+  onDelete,
+}: Props) {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [side, setSide] = useState<Side>("unknown");
+  const [group, setGroup] = useState<Group>("other");
+  const [notes, setNotes] = useState("");
 
   useEffect(() => {
     if (contact) {
@@ -72,11 +78,11 @@ export function ContactEditModal({ visible, contact, onClose, onSave, onDelete }
   };
 
   const handleDelete = () => {
-    Alert.alert('מחיקת איש קשר', 'האם למחוק את איש הקשר?', [
-      { text: 'ביטול', style: 'cancel' },
+    Alert.alert("מחיקת איש קשר", "האם למחוק את איש הקשר?", [
+      { text: "ביטול", style: "cancel" },
       {
-        text: 'מחק',
-        style: 'destructive',
+        text: "מחק",
+        style: "destructive",
         onPress: () => {
           onDelete?.();
           onClose();
@@ -88,10 +94,15 @@ export function ContactEditModal({ visible, contact, onClose, onSave, onDelete }
   if (!contact) return null;
 
   return (
-    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
+    <Modal
+      visible={visible}
+      animationType="slide"
+      transparent
+      onRequestClose={onClose}
+    >
       <KeyboardAvoidingView
         style={styles.backdrop}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <View style={styles.sheet}>
           <View style={styles.header}>
@@ -101,7 +112,10 @@ export function ContactEditModal({ visible, contact, onClose, onSave, onDelete }
             </TouchableOpacity>
           </View>
 
-          <ScrollView contentContainerStyle={styles.body} keyboardShouldPersistTaps="handled">
+          <ScrollView
+            contentContainerStyle={styles.body}
+            keyboardShouldPersistTaps="handled"
+          >
             <Text style={styles.label}>שם פרטי</Text>
             <TextInput
               value={firstName}
@@ -126,7 +140,10 @@ export function ContactEditModal({ visible, contact, onClose, onSave, onDelete }
             <TextInput
               value={phone}
               onChangeText={setPhone}
-              style={[styles.input, !isValidIsraeliMobile(phone) && styles.inputError]}
+              style={[
+                styles.input,
+                !isValidIsraeliMobile(phone) && styles.inputError,
+              ]}
               textAlign="right"
               keyboardType="phone-pad"
               placeholder="05X-XXXXXXX"
@@ -145,13 +162,13 @@ export function ContactEditModal({ visible, contact, onClose, onSave, onDelete }
                   selected={side === s}
                   onPress={() => setSide(s)}
                   color={
-                    s === 'groom'
+                    s === "groom"
                       ? colors.groom
-                      : s === 'bride'
-                      ? colors.bride
-                      : s === 'both'
-                      ? colors.both
-                      : colors.unknown
+                      : s === "bride"
+                        ? colors.bride
+                        : s === "both"
+                          ? colors.both
+                          : colors.unknown
                   }
                 />
               ))}
@@ -181,7 +198,11 @@ export function ContactEditModal({ visible, contact, onClose, onSave, onDelete }
               placeholderTextColor={colors.textMuted}
             />
 
-            <PrimaryButton title="שמור" onPress={handleSave} style={{ marginTop: 16 }} />
+            <PrimaryButton
+              title="שמור"
+              onPress={handleSave}
+              style={{ marginTop: 16 }}
+            />
 
             {onDelete && (
               <PrimaryButton
@@ -201,26 +222,26 @@ export function ContactEditModal({ visible, contact, onClose, onSave, onDelete }
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'flex-end',
+    backgroundColor: "rgba(0,0,0,0.4)",
+    justifyContent: "flex-end",
   },
   sheet: {
     backgroundColor: colors.background,
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
-    maxHeight: '92%',
+    maxHeight: "92%",
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 18,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
   title: {
     fontSize: 19,
-    fontWeight: '700',
+    fontWeight: "700",
     color: colors.text,
   },
   close: {
@@ -234,11 +255,11 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: "700",
     color: colors.text,
     marginTop: 14,
     marginBottom: 6,
-    textAlign: 'right',
+    textAlign: "right",
   },
   input: {
     backgroundColor: colors.card,
@@ -257,14 +278,14 @@ const styles = StyleSheet.create({
     color: colors.error,
     fontSize: 12,
     marginTop: 4,
-    textAlign: 'right',
+    textAlign: "right",
   },
   textArea: {
     height: 80,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
   chipsRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
   },
 });

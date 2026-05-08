@@ -1,16 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { I18nManager, Platform, View, ActivityIndicator, StyleSheet, Text } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { NavigationContainer } from '@react-navigation/native';
-import AppNavigator from './src/navigation/AppNavigator';
-import { ContactsProvider } from './src/storage/ContactsContext';
-import { colors } from './src/theme/colors';
+import React, { useEffect, useState } from "react";
+import {
+  I18nManager,
+  Platform,
+  View,
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+} from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { NavigationContainer } from "@react-navigation/native";
+import AppNavigator from "./src/navigation/AppNavigator";
+import { ContactsProvider } from "./src/storage/ContactsContext";
+import { colors } from "./src/theme/colors";
 
-if (Platform.OS === 'web') {
-  if (typeof document !== 'undefined') {
-    document.documentElement.setAttribute('dir', 'rtl');
-    document.documentElement.setAttribute('lang', 'he');
+if (Platform.OS === "web") {
+  if (typeof document !== "undefined") {
+    document.documentElement.setAttribute("dir", "rtl");
+    document.documentElement.setAttribute("lang", "he");
   }
 } else if (!I18nManager.isRTL) {
   try {
@@ -53,8 +60,8 @@ export default function App() {
 const styles = StyleSheet.create({
   loading: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: colors.background,
   },
   loadingText: {

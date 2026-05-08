@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -10,18 +10,22 @@ import {
   TouchableOpacity,
   Pressable,
   Platform,
-} from 'react-native';
-import * as Contacts from 'expo-contacts';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation/AppNavigator';
-import { colors } from '../theme/colors';
-import { PrimaryButton } from '../components/PrimaryButton';
-import { useContacts } from '../storage/ContactsContext';
-import { Contact } from '../types/Contact';
-import { isValidIsraeliMobile, normalizePhone, formatPhoneForDisplay } from '../utils/phoneNormalizer';
-import { generateId } from '../utils/idGenerator';
+} from "react-native";
+import * as Contacts from "expo-contacts";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../navigation/AppNavigator";
+import { colors } from "../theme/colors";
+import { PrimaryButton } from "../components/PrimaryButton";
+import { useContacts } from "../storage/ContactsContext";
+import { Contact } from "../types/Contact";
+import {
+  isValidIsraeliMobile,
+  normalizePhone,
+  formatPhoneForDisplay,
+} from "../utils/phoneNormalizer";
+import { generateId } from "../utils/idGenerator";
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Import'>;
+type Props = NativeStackScreenProps<RootStackParamList, "Import">;
 
 interface ImportableContact {
   id: string;
@@ -32,50 +36,70 @@ interface ImportableContact {
   isValid: boolean;
 }
 
-type PermissionState = 'unknown' | 'granted' | 'denied';
+type PermissionState = "unknown" | "granted" | "denied";
 
 export default function ImportScreen({ navigation }: Props) {
-  if (Platform.OS === 'web') {
-    return <WebUnsupported onBack={() => navigation.goBack()} onAdd={() => navigation.navigate('Contacts')} />;
+  if (Platform.OS === "web") {
+    return (
+      <WebUnsupported
+        onBack={() => navigation.goBack()}
+        onAdd={() => navigation.navigate("Contacts")}
+      />
+    );
   }
   return <NativeImport navigation={navigation} />;
 }
 
-function WebUnsupported({ onBack, onAdd }: { onBack: () => void; onAdd: () => void }) {
+function WebUnsupported({
+  onBack,
+  onAdd,
+}: {
+  onBack: () => void;
+  onAdd: () => void;
+}) {
   return (
     <View style={styles.center}>
       <Text style={styles.permEmoji}>📱</Text>
       <Text style={styles.permTitle}>ייבוא זמין רק במובייל</Text>
       <Text style={styles.permText}>
-        הדפדפן אינו מאפשר גישה לאנשי הקשר במכשיר. לייבוא רשימה, פתחי את האפליקציה בטלפון.
-        בגרסת הוויב ניתן להוסיף, לערוך, למחוק ולייצא רשימה.
+        הדפדפן אינו מאפשר גישה לאנשי הקשר במכשיר. לייבוא רשימה, פתחי את
+        האפליקציה בטלפון. בגרסת הוויב ניתן להוסיף, לערוך, למחוק ולייצא רשימה.
       </Text>
-      <PrimaryButton title="הוסיפי איש קשר ידנית" onPress={onAdd} style={{ marginTop: 18 }} />
-      <PrimaryButton title="חזרה" variant="ghost" onPress={onBack} style={{ marginTop: 8 }} />
+      <PrimaryButton
+        title="הוסיפי איש קשר ידנית"
+        onPress={onAdd}
+        style={{ marginTop: 18 }}
+      />
+      <PrimaryButton
+        title="חזרה"
+        variant="ghost"
+        onPress={onBack}
+        style={{ marginTop: 8 }}
+      />
     </View>
   );
 }
 
 function NativeImport({ navigation }: Props) {
   const { addMany } = useContacts();
-  const [permission, setPermission] = useState<PermissionState>('unknown');
+  const [permission, setPermission] = useState<PermissionState>("unknown");
   const [loading, setLoading] = useState(false);
   const [importing, setImporting] = useState(false);
   const [items, setItems] = useState<ImportableContact[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [onlyValid, setOnlyValid] = useState(true);
 
   const requestAndLoad = useCallback(async () => {
     setLoading(true);
     try {
       const { status } = await Contacts.requestPermissionsAsync();
-      if (status !== 'granted') {
-        setPermission('denied');
+      if (status !== "granted") {
+        setPermission("denied");
         setLoading(false);
         return;
       }
-      setPermission('granted');
+      setPermission("granted");
 
       const { data } = await Contacts.getContactsAsync({
         fields: [
@@ -90,8 +114,8 @@ function NativeImport({ navigation }: Props) {
       for (const c of data) {
         const phones = c.phoneNumbers || [];
         if (phones.length === 0) continue;
-        const firstName = c.firstName || '';
-        const lastName = c.lastName || '';
+        const firstName = c.firstName || "";
+        const lastName = c.lastName || "";
         const fullName = c.name || `${firstName} ${lastName}`.trim();
 
         for (const p of phones) {
@@ -115,10 +139,10 @@ function NativeImport({ navigation }: Props) {
         return true;
       });
 
-      deduped.sort((a, b) => a.fullName.localeCompare(b.fullName, 'he'));
+      deduped.sort((a, b) => a.fullName.localeCompare(b.fullName, "he"));
       setItems(deduped);
     } catch (e) {
-      Alert.alert('שגיאה', 'אירעה שגיאה בטעינת אנשי הקשר');
+      Alert.alert("שגיאה", "אירעה שגיאה בטעינת אנשי הקשר");
     } finally {
       setLoading(false);
     }
@@ -158,7 +182,7 @@ function NativeImport({ navigation }: Props) {
 
   const handleImport = async () => {
     if (selected.size === 0) {
-      Alert.alert('בחירה ריקה', 'יש לבחור לפחות איש קשר אחד');
+      Alert.alert("בחירה ריקה", "יש לבחור לפחות איש קשר אחד");
       return;
     }
 
@@ -171,9 +195,9 @@ function NativeImport({ navigation }: Props) {
         firstName: c.firstName,
         lastName: c.lastName,
         phone: c.phone,
-        side: 'unknown',
-        group: 'other',
-        notes: '',
+        side: "unknown",
+        group: "other",
+        notes: "",
         isSelected: false,
         isDuplicate: false,
         isInvalid: !c.isValid,
@@ -183,13 +207,13 @@ function NativeImport({ navigation }: Props) {
     setImporting(false);
 
     Alert.alert(
-      'ייבוא הושלם',
+      "ייבוא הושלם",
       `נוספו: ${result.added}\nדולגו (כפולים): ${result.skipped}`,
-      [{ text: 'אישור', onPress: () => navigation.navigate('Contacts') }]
+      [{ text: "אישור", onPress: () => navigation.navigate("Contacts") }],
     );
   };
 
-  if (permission === 'denied') {
+  if (permission === "denied") {
     return (
       <View style={styles.center}>
         <Text style={styles.permEmoji}>🔐</Text>
@@ -197,7 +221,11 @@ function NativeImport({ navigation }: Props) {
         <Text style={styles.permText}>
           כדי לייבא אנשי קשר יש לאשר גישה בהגדרות המכשיר.
         </Text>
-        <PrimaryButton title="נסה שוב" onPress={requestAndLoad} style={{ marginTop: 18 }} />
+        <PrimaryButton
+          title="נסה שוב"
+          onPress={requestAndLoad}
+          style={{ marginTop: 18 }}
+        />
         <PrimaryButton
           title="חזור"
           variant="ghost"
@@ -249,7 +277,9 @@ function NativeImport({ navigation }: Props) {
         </TouchableOpacity>
         {selected.size > 0 && (
           <TouchableOpacity onPress={clearSelection} style={styles.linkBtn}>
-            <Text style={[styles.linkText, { color: colors.error }]}>נקה ({selected.size})</Text>
+            <Text style={[styles.linkText, { color: colors.error }]}>
+              נקה ({selected.size})
+            </Text>
           </TouchableOpacity>
         )}
       </View>
@@ -262,15 +292,23 @@ function NativeImport({ navigation }: Props) {
         renderItem={({ item }) => {
           const isSel = selected.has(item.id);
           return (
-            <Pressable onPress={() => toggleOne(item.id)} style={[styles.row, isSel && styles.rowSel]}>
+            <Pressable
+              onPress={() => toggleOne(item.id)}
+              style={[styles.row, isSel && styles.rowSel]}
+            >
               <View style={[styles.checkbox, isSel && styles.checkboxOn]}>
                 {isSel && <Text style={styles.checkboxMark}>✓</Text>}
               </View>
               <View style={{ flex: 1, marginStart: 12 }}>
-                <Text style={styles.rowName}>{item.fullName || '—'}</Text>
-                <Text style={[styles.rowPhone, !item.isValid && { color: colors.error }]}>
+                <Text style={styles.rowName}>{item.fullName || "—"}</Text>
+                <Text
+                  style={[
+                    styles.rowPhone,
+                    !item.isValid && { color: colors.error },
+                  ]}
+                >
                   {formatPhoneForDisplay(item.phone)}
-                  {!item.isValid && '  · לא נייד ישראלי'}
+                  {!item.isValid && "  · לא נייד ישראלי"}
                 </Text>
               </View>
             </Pressable>
@@ -285,7 +323,11 @@ function NativeImport({ navigation }: Props) {
 
       <View style={styles.footer}>
         <PrimaryButton
-          title={selected.size > 0 ? `ייבא ${selected.size} אנשי קשר` : 'ייבא אנשי קשר'}
+          title={
+            selected.size > 0
+              ? `ייבא ${selected.size} אנשי קשר`
+              : "ייבא אנשי קשר"
+          }
           onPress={handleImport}
           loading={importing}
           disabled={selected.size === 0}
@@ -302,8 +344,8 @@ const styles = StyleSheet.create({
   },
   center: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 24,
     backgroundColor: colors.background,
   },
@@ -312,14 +354,14 @@ const styles = StyleSheet.create({
   },
   permTitle: {
     fontSize: 20,
-    fontWeight: '700',
+    fontWeight: "700",
     color: colors.text,
     marginTop: 12,
   },
   permText: {
     fontSize: 14,
     color: colors.textMuted,
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: 8,
   },
   loadingText: {
@@ -342,15 +384,15 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   toolbar: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 14,
     paddingVertical: 8,
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
   },
   checkboxWrap: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   checkbox: {
     width: 22,
@@ -358,22 +400,22 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     borderWidth: 2,
     borderColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   checkboxOn: {
     backgroundColor: colors.primary,
   },
   checkboxMark: {
-    color: '#fff',
-    fontWeight: '800',
+    color: "#fff",
+    fontWeight: "800",
     fontSize: 14,
   },
   checkboxLabel: {
     marginStart: 8,
     color: colors.text,
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   linkBtn: {
     paddingVertical: 6,
@@ -382,11 +424,11 @@ const styles = StyleSheet.create({
   linkText: {
     color: colors.primary,
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: colors.card,
     paddingVertical: 12,
     paddingHorizontal: 14,
@@ -402,7 +444,7 @@ const styles = StyleSheet.create({
   },
   rowName: {
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: "700",
     color: colors.text,
   },
   rowPhone: {
@@ -412,14 +454,14 @@ const styles = StyleSheet.create({
   },
   empty: {
     paddingVertical: 60,
-    alignItems: 'center',
+    alignItems: "center",
   },
   emptyText: {
     color: colors.textMuted,
     fontSize: 14,
   },
   footer: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     bottom: 0,

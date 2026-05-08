@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -7,8 +7,8 @@ import {
   Modal,
   ScrollView,
   Alert,
-} from 'react-native';
-import { colors } from '../theme/colors';
+} from "react-native";
+import { colors } from "../theme/colors";
 import {
   Side,
   Group,
@@ -16,9 +16,9 @@ import {
   GROUP_LABELS,
   SIDE_OPTIONS,
   GROUP_OPTIONS,
-} from '../types/Contact';
-import { PrimaryButton } from './PrimaryButton';
-import { Chip } from './Chip';
+} from "../types/Contact";
+import { PrimaryButton } from "./PrimaryButton";
+import { Chip } from "./Chip";
 
 interface Props {
   count: number;
@@ -37,14 +37,14 @@ export function BulkActionsBar({
   onMerge,
   canMerge,
 }: Props) {
-  const [pickerOpen, setPickerOpen] = useState<'side' | 'group' | null>(null);
+  const [pickerOpen, setPickerOpen] = useState<"side" | "group" | null>(null);
   const [side, setSide] = useState<Side | null>(null);
   const [group, setGroup] = useState<Group | null>(null);
 
   const handleApply = () => {
-    if (pickerOpen === 'side' && side) {
+    if (pickerOpen === "side" && side) {
       onAssign({ side });
-    } else if (pickerOpen === 'group' && group) {
+    } else if (pickerOpen === "group" && group) {
       onAssign({ group });
     }
     setPickerOpen(null);
@@ -53,29 +53,33 @@ export function BulkActionsBar({
   };
 
   const handleDelete = () => {
-    Alert.alert('מחיקה', `למחוק ${count} אנשי קשר?`, [
-      { text: 'ביטול', style: 'cancel' },
-      { text: 'מחק', style: 'destructive', onPress: onDelete },
+    Alert.alert("מחיקה", `למחוק ${count} אנשי קשר?`, [
+      { text: "ביטול", style: "cancel" },
+      { text: "מחק", style: "destructive", onPress: onDelete },
     ]);
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.row}>
-        <TouchableOpacity onPress={onClear} style={styles.clearBtn} hitSlop={10}>
+        <TouchableOpacity
+          onPress={onClear}
+          style={styles.clearBtn}
+          hitSlop={10}
+        >
           <Text style={styles.clearText}>✕</Text>
         </TouchableOpacity>
         <Text style={styles.count}>נבחרו {count}</Text>
         <View style={{ flex: 1 }} />
         <TouchableOpacity
           style={styles.actionBtn}
-          onPress={() => setPickerOpen('side')}
+          onPress={() => setPickerOpen("side")}
         >
           <Text style={styles.actionText}>צד</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.actionBtn}
-          onPress={() => setPickerOpen('group')}
+          onPress={() => setPickerOpen("group")}
         >
           <Text style={styles.actionText}>קבוצה</Text>
         </TouchableOpacity>
@@ -84,8 +88,11 @@ export function BulkActionsBar({
             <Text style={styles.actionText}>מזג</Text>
           </TouchableOpacity>
         )}
-        <TouchableOpacity style={[styles.actionBtn, styles.deleteBtn]} onPress={handleDelete}>
-          <Text style={[styles.actionText, { color: '#fff' }]}>מחק</Text>
+        <TouchableOpacity
+          style={[styles.actionBtn, styles.deleteBtn]}
+          onPress={handleDelete}
+        >
+          <Text style={[styles.actionText, { color: "#fff" }]}>מחק</Text>
         </TouchableOpacity>
       </View>
 
@@ -98,11 +105,14 @@ export function BulkActionsBar({
         <View style={styles.backdrop}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>
-              {pickerOpen === 'side' ? 'בחר צד' : 'בחר קבוצה'}
+              {pickerOpen === "side" ? "בחר צד" : "בחר קבוצה"}
             </Text>
-            <ScrollView contentContainerStyle={styles.chipWrap} horizontal={false}>
+            <ScrollView
+              contentContainerStyle={styles.chipWrap}
+              horizontal={false}
+            >
               <View style={styles.chipsRow}>
-                {pickerOpen === 'side' &&
+                {pickerOpen === "side" &&
                   SIDE_OPTIONS.map((s) => (
                     <Chip
                       key={s}
@@ -110,17 +120,17 @@ export function BulkActionsBar({
                       selected={side === s}
                       onPress={() => setSide(s)}
                       color={
-                        s === 'groom'
+                        s === "groom"
                           ? colors.groom
-                          : s === 'bride'
-                          ? colors.bride
-                          : s === 'both'
-                          ? colors.both
-                          : colors.unknown
+                          : s === "bride"
+                            ? colors.bride
+                            : s === "both"
+                              ? colors.both
+                              : colors.unknown
                       }
                     />
                   ))}
-                {pickerOpen === 'group' &&
+                {pickerOpen === "group" &&
                   GROUP_OPTIONS.map((g) => (
                     <Chip
                       key={g}
@@ -134,7 +144,7 @@ export function BulkActionsBar({
             <PrimaryButton
               title="החל"
               onPress={handleApply}
-              disabled={pickerOpen === 'side' ? !side : !group}
+              disabled={pickerOpen === "side" ? !side : !group}
               style={{ marginTop: 8 }}
             />
             <PrimaryButton
@@ -157,27 +167,27 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   clearBtn: {
     paddingHorizontal: 8,
   },
   clearText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 20,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   count: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: "700",
     marginStart: 6,
   },
   actionBtn: {
     paddingHorizontal: 12,
     paddingVertical: 8,
-    backgroundColor: 'rgba(255,255,255,0.15)',
+    backgroundColor: "rgba(255,255,255,0.15)",
     borderRadius: 8,
     marginStart: 6,
   },
@@ -185,14 +195,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.error,
   },
   actionText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'center',
+    backgroundColor: "rgba(0,0,0,0.4)",
+    justifyContent: "center",
     padding: 24,
   },
   modal: {
@@ -202,16 +212,16 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 17,
-    fontWeight: '700',
+    fontWeight: "700",
     color: colors.text,
     marginBottom: 12,
-    textAlign: 'right',
+    textAlign: "right",
   },
   chipWrap: {
     paddingVertical: 4,
   },
   chipsRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
   },
 });

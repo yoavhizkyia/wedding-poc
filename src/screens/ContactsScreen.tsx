@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -8,33 +8,49 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
-} from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation/AppNavigator';
-import { colors } from '../theme/colors';
-import { useContacts } from '../storage/ContactsContext';
-import { Contact, GROUP_LABELS, SIDE_LABELS, Side, Group } from '../types/Contact';
-import { ContactItem } from '../components/ContactItem';
-import { ContactEditModal } from '../components/ContactEditModal';
-import { Chip } from '../components/Chip';
-import { BulkActionsBar } from '../components/BulkActionsBar';
-import { normalizePhone } from '../utils/phoneNormalizer';
-import { generateId } from '../utils/idGenerator';
-import { PrimaryButton } from '../components/PrimaryButton';
+} from "react-native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../navigation/AppNavigator";
+import { colors } from "../theme/colors";
+import { useContacts } from "../storage/ContactsContext";
+import {
+  Contact,
+  GROUP_LABELS,
+  SIDE_LABELS,
+  Side,
+  Group,
+} from "../types/Contact";
+import { ContactItem } from "../components/ContactItem";
+import { ContactEditModal } from "../components/ContactEditModal";
+import { Chip } from "../components/Chip";
+import { BulkActionsBar } from "../components/BulkActionsBar";
+import { normalizePhone } from "../utils/phoneNormalizer";
+import { generateId } from "../utils/idGenerator";
+import { PrimaryButton } from "../components/PrimaryButton";
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Contacts'>;
+type Props = NativeStackScreenProps<RootStackParamList, "Contacts">;
 
-type SideFilter = Side | 'all';
-type GroupFilter = Group | 'all';
-type FlagFilter = 'all' | 'invalid' | 'duplicates';
+type SideFilter = Side | "all";
+type GroupFilter = Group | "all";
+type FlagFilter = "all" | "invalid" | "duplicates";
 
 export default function ContactsScreen({ navigation, route }: Props) {
-  const { contacts, addMany, update, remove, removeMany, bulkAssign, mergeIds } = useContacts();
+  const {
+    contacts,
+    addMany,
+    update,
+    remove,
+    removeMany,
+    bulkAssign,
+    mergeIds,
+  } = useContacts();
 
-  const [search, setSearch] = useState('');
-  const [sideFilter, setSideFilter] = useState<SideFilter>('all');
-  const [groupFilter, setGroupFilter] = useState<GroupFilter>('all');
-  const [flagFilter, setFlagFilter] = useState<FlagFilter>(route.params?.filter || 'all');
+  const [search, setSearch] = useState("");
+  const [sideFilter, setSideFilter] = useState<SideFilter>("all");
+  const [groupFilter, setGroupFilter] = useState<GroupFilter>("all");
+  const [flagFilter, setFlagFilter] = useState<FlagFilter>(
+    route.params?.filter || "all",
+  );
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [editing, setEditing] = useState<Contact | null>(null);
 
@@ -46,7 +62,11 @@ export default function ContactsScreen({ navigation, route }: Props) {
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity onPress={handleAddManual} hitSlop={10}>
-          <Text style={{ color: colors.primary, fontSize: 16, fontWeight: '700' }}>+ הוסף</Text>
+          <Text
+            style={{ color: colors.primary, fontSize: 16, fontWeight: "700" }}
+          >
+            + הוסף
+          </Text>
         </TouchableOpacity>
       ),
     });
@@ -55,13 +75,13 @@ export default function ContactsScreen({ navigation, route }: Props) {
   const handleAddManual = () => {
     const blank: Contact = {
       id: generateId(),
-      fullName: '',
-      firstName: '',
-      lastName: '',
-      phone: '',
-      side: 'unknown',
-      group: 'other',
-      notes: '',
+      fullName: "",
+      firstName: "",
+      lastName: "",
+      phone: "",
+      side: "unknown",
+      group: "other",
+      notes: "",
       isSelected: false,
       isDuplicate: false,
       isInvalid: true,
@@ -72,12 +92,18 @@ export default function ContactsScreen({ navigation, route }: Props) {
   const filtered = useMemo(() => {
     const q = search.trim();
     return contacts.filter((c) => {
-      if (sideFilter !== 'all' && c.side !== sideFilter) return false;
-      if (groupFilter !== 'all' && c.group !== groupFilter) return false;
-      if (flagFilter === 'invalid' && !c.isInvalid) return false;
-      if (flagFilter === 'duplicates' && !c.isDuplicate) return false;
+      if (sideFilter !== "all" && c.side !== sideFilter) return false;
+      if (groupFilter !== "all" && c.group !== groupFilter) return false;
+      if (flagFilter === "invalid" && !c.isInvalid) return false;
+      if (flagFilter === "duplicates" && !c.isDuplicate) return false;
       if (!q) return true;
-      const inName = (c.fullName + ' ' + c.firstName + ' ' + c.lastName).includes(q);
+      const inName = (
+        c.fullName +
+        " " +
+        c.firstName +
+        " " +
+        c.lastName
+      ).includes(q);
       const inPhone = normalizePhone(c.phone).includes(normalizePhone(q));
       return inName || inPhone;
     });
@@ -129,13 +155,13 @@ export default function ContactsScreen({ navigation, route }: Props) {
 
   const handleMerge = () => {
     if (!canMerge) {
-      Alert.alert('מיזוג', 'ניתן למזג רק אנשי קשר עם אותו מספר טלפון מנורמל');
+      Alert.alert("מיזוג", "ניתן למזג רק אנשי קשר עם אותו מספר טלפון מנורמל");
       return;
     }
-    Alert.alert('מיזוג', `למזג ${selected.size} אנשי קשר לאחד?`, [
-      { text: 'ביטול', style: 'cancel' },
+    Alert.alert("מיזוג", `למזג ${selected.size} אנשי קשר לאחד?`, [
+      { text: "ביטול", style: "cancel" },
       {
-        text: 'מזג',
+        text: "מזג",
         onPress: async () => {
           await mergeIds(Array.from(selected));
           setSelected(new Set());
@@ -145,7 +171,12 @@ export default function ContactsScreen({ navigation, route }: Props) {
   };
 
   const sideCounts = useMemo(() => {
-    const counts: Record<Side, number> = { groom: 0, bride: 0, both: 0, unknown: 0 };
+    const counts: Record<Side, number> = {
+      groom: 0,
+      bride: 0,
+      both: 0,
+      unknown: 0,
+    };
     for (const c of contacts) counts[c.side]++;
     return counts;
   }, [contacts]);
@@ -170,54 +201,64 @@ export default function ContactsScreen({ navigation, route }: Props) {
       >
         <Chip
           label="הכל"
-          selected={flagFilter === 'all' && sideFilter === 'all' && groupFilter === 'all'}
+          selected={
+            flagFilter === "all" &&
+            sideFilter === "all" &&
+            groupFilter === "all"
+          }
           onPress={() => {
-            setFlagFilter('all');
-            setSideFilter('all');
-            setGroupFilter('all');
+            setFlagFilter("all");
+            setSideFilter("all");
+            setGroupFilter("all");
           }}
           count={contacts.length}
         />
         <Chip
           label="שגויים"
-          selected={flagFilter === 'invalid'}
-          onPress={() => setFlagFilter(flagFilter === 'invalid' ? 'all' : 'invalid')}
+          selected={flagFilter === "invalid"}
+          onPress={() =>
+            setFlagFilter(flagFilter === "invalid" ? "all" : "invalid")
+          }
           color={colors.error}
           count={contacts.filter((c) => c.isInvalid).length}
         />
         <Chip
           label="כפולים"
-          selected={flagFilter === 'duplicates'}
-          onPress={() => setFlagFilter(flagFilter === 'duplicates' ? 'all' : 'duplicates')}
+          selected={flagFilter === "duplicates"}
+          onPress={() =>
+            setFlagFilter(flagFilter === "duplicates" ? "all" : "duplicates")
+          }
           color={colors.warning}
           count={contacts.filter((c) => c.isDuplicate).length}
         />
-        {(['groom', 'bride', 'both', 'unknown'] as Side[]).map((s) => (
+        {(["groom", "bride", "both", "unknown"] as Side[]).map((s) => (
           <Chip
             key={s}
             label={SIDE_LABELS[s]}
             selected={sideFilter === s}
-            onPress={() => setSideFilter(sideFilter === s ? 'all' : s)}
+            onPress={() => setSideFilter(sideFilter === s ? "all" : s)}
             color={
-              s === 'groom'
+              s === "groom"
                 ? colors.groom
-                : s === 'bride'
-                ? colors.bride
-                : s === 'both'
-                ? colors.both
-                : colors.unknown
+                : s === "bride"
+                  ? colors.bride
+                  : s === "both"
+                    ? colors.both
+                    : colors.unknown
             }
             count={sideCounts[s]}
           />
         ))}
-        {(['family', 'friends', 'work', 'army', 'other'] as Group[]).map((g) => (
-          <Chip
-            key={g}
-            label={GROUP_LABELS[g]}
-            selected={groupFilter === g}
-            onPress={() => setGroupFilter(groupFilter === g ? 'all' : g)}
-          />
-        ))}
+        {(["family", "friends", "work", "army", "other"] as Group[]).map(
+          (g) => (
+            <Chip
+              key={g}
+              label={GROUP_LABELS[g]}
+              selected={groupFilter === g}
+              onPress={() => setGroupFilter(groupFilter === g ? "all" : g)}
+            />
+          ),
+        )}
       </ScrollView>
 
       <FlatList
@@ -239,10 +280,12 @@ export default function ContactsScreen({ navigation, route }: Props) {
           <View style={styles.empty}>
             <Text style={styles.emptyEmoji}>📭</Text>
             <Text style={styles.emptyTitle}>אין אנשי קשר</Text>
-            <Text style={styles.emptyText}>ייבא אנשי קשר מהמכשיר או הוסף ידנית</Text>
+            <Text style={styles.emptyText}>
+              ייבא אנשי קשר מהמכשיר או הוסף ידנית
+            </Text>
             <PrimaryButton
               title="ייבא אנשי קשר"
-              onPress={() => navigation.navigate('Import')}
+              onPress={() => navigation.navigate("Import")}
               style={{ marginTop: 16 }}
             />
           </View>
@@ -309,21 +352,21 @@ const styles = StyleSheet.create({
   empty: {
     paddingTop: 80,
     paddingHorizontal: 24,
-    alignItems: 'center',
+    alignItems: "center",
   },
   emptyEmoji: {
     fontSize: 48,
   },
   emptyTitle: {
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: "700",
     color: colors.text,
     marginTop: 10,
   },
   emptyText: {
     fontSize: 14,
     color: colors.textMuted,
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: 6,
   },
 });

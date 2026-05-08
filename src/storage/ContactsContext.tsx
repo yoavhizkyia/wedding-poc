@@ -6,11 +6,11 @@ import React, {
   useMemo,
   useRef,
   useState,
-} from 'react';
-import { Contact, Side, Group } from '../types/Contact';
-import { loadContacts, saveContacts } from './contactsStorage';
-import { markDuplicates, mergeContacts } from '../utils/duplicateDetector';
-import { isValidIsraeliMobile, normalizePhone } from '../utils/phoneNormalizer';
+} from "react";
+import { Contact, Side, Group } from "../types/Contact";
+import { loadContacts, saveContacts } from "./contactsStorage";
+import { markDuplicates, mergeContacts } from "../utils/duplicateDetector";
+import { isValidIsraeliMobile, normalizePhone } from "../utils/phoneNormalizer";
 
 interface ContactsContextValue {
   contacts: Contact[];
@@ -19,12 +19,17 @@ interface ContactsContextValue {
   update: (id: string, patch: Partial<Contact>) => Promise<void>;
   remove: (id: string) => Promise<void>;
   removeMany: (ids: string[]) => Promise<void>;
-  bulkAssign: (ids: string[], patch: { side?: Side; group?: Group }) => Promise<void>;
+  bulkAssign: (
+    ids: string[],
+    patch: { side?: Side; group?: Group },
+  ) => Promise<void>;
   mergeIds: (ids: string[]) => Promise<void>;
   reset: () => Promise<void>;
 }
 
-const ContactsContext = createContext<ContactsContextValue | undefined>(undefined);
+const ContactsContext = createContext<ContactsContextValue | undefined>(
+  undefined,
+);
 
 function recomputeFlags(items: Contact[]): Contact[] {
   const withInvalid = items.map((c) => {
@@ -60,15 +65,15 @@ export function ContactsProvider({ children }: { children: React.ReactNode }) {
       setContacts(updated);
       persist(updated);
     },
-    [persist]
+    [persist],
   );
 
-  const addMany = useCallback<ContactsContextValue['addMany']>(
+  const addMany = useCallback<ContactsContextValue["addMany"]>(
     async (incoming) => {
       let added = 0;
       let skipped = 0;
       const existingPhones = new Set(
-        contacts.map((c) => normalizePhone(c.phone)).filter(Boolean)
+        contacts.map((c) => normalizePhone(c.phone)).filter(Boolean),
       );
       const next = [...contacts];
       for (const c of incoming) {
@@ -84,44 +89,44 @@ export function ContactsProvider({ children }: { children: React.ReactNode }) {
       setAll(next);
       return { added, skipped };
     },
-    [contacts, setAll]
+    [contacts, setAll],
   );
 
-  const update = useCallback<ContactsContextValue['update']>(
+  const update = useCallback<ContactsContextValue["update"]>(
     async (id, patch) => {
       const next = contacts.map((c) => (c.id === id ? { ...c, ...patch } : c));
       setAll(next);
     },
-    [contacts, setAll]
+    [contacts, setAll],
   );
 
-  const remove = useCallback<ContactsContextValue['remove']>(
+  const remove = useCallback<ContactsContextValue["remove"]>(
     async (id) => {
       setAll(contacts.filter((c) => c.id !== id));
     },
-    [contacts, setAll]
+    [contacts, setAll],
   );
 
-  const removeMany = useCallback<ContactsContextValue['removeMany']>(
+  const removeMany = useCallback<ContactsContextValue["removeMany"]>(
     async (ids) => {
       const set = new Set(ids);
       setAll(contacts.filter((c) => !set.has(c.id)));
     },
-    [contacts, setAll]
+    [contacts, setAll],
   );
 
-  const bulkAssign = useCallback<ContactsContextValue['bulkAssign']>(
+  const bulkAssign = useCallback<ContactsContextValue["bulkAssign"]>(
     async (ids, patch) => {
       const set = new Set(ids);
       const next = contacts.map((c) =>
-        set.has(c.id) ? { ...c, ...patch } : c
+        set.has(c.id) ? { ...c, ...patch } : c,
       );
       setAll(next);
     },
-    [contacts, setAll]
+    [contacts, setAll],
   );
 
-  const mergeIds = useCallback<ContactsContextValue['mergeIds']>(
+  const mergeIds = useCallback<ContactsContextValue["mergeIds"]>(
     async (ids) => {
       if (ids.length < 2) return;
       const set = new Set(ids);
@@ -131,7 +136,7 @@ export function ContactsProvider({ children }: { children: React.ReactNode }) {
       const others = contacts.filter((c) => !set.has(c.id));
       setAll([...others, merged]);
     },
-    [contacts, setAll]
+    [contacts, setAll],
   );
 
   const reset = useCallback(async () => {
@@ -150,14 +155,28 @@ export function ContactsProvider({ children }: { children: React.ReactNode }) {
       mergeIds,
       reset,
     }),
-    [contacts, loading, addMany, update, remove, removeMany, bulkAssign, mergeIds, reset]
+    [
+      contacts,
+      loading,
+      addMany,
+      update,
+      remove,
+      removeMany,
+      bulkAssign,
+      mergeIds,
+      reset,
+    ],
   );
 
-  return <ContactsContext.Provider value={value}>{children}</ContactsContext.Provider>;
+  return (
+    <ContactsContext.Provider value={value}>
+      {children}
+    </ContactsContext.Provider>
+  );
 }
 
 export function useContacts(): ContactsContextValue {
   const ctx = useContext(ContactsContext);
-  if (!ctx) throw new Error('useContacts must be used within ContactsProvider');
+  if (!ctx) throw new Error("useContacts must be used within ContactsProvider");
   return ctx;
 }

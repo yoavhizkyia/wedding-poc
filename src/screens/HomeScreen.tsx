@@ -1,12 +1,12 @@
-import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation/AppNavigator';
-import { colors } from '../theme/colors';
-import { PrimaryButton } from '../components/PrimaryButton';
-import { useContacts } from '../storage/ContactsContext';
+import React, { useMemo } from "react";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../navigation/AppNavigator";
+import { colors } from "../theme/colors";
+import { PrimaryButton } from "../components/PrimaryButton";
+import { useContacts } from "../storage/ContactsContext";
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+type Props = NativeStackScreenProps<RootStackParamList, "Home">;
 
 export default function HomeScreen({ navigation }: Props) {
   const { contacts } = useContacts();
@@ -24,7 +24,9 @@ export default function HomeScreen({ navigation }: Props) {
       <View style={styles.hero}>
         <Text style={styles.heroEmoji}>💍</Text>
         <Text style={styles.heroTitle}>רשימת מוזמנים</Text>
-        <Text style={styles.heroSubtitle}>נהלי את אנשי הקשר לחתונה במקום אחד</Text>
+        <Text style={styles.heroSubtitle}>
+          נהל את אנשי הקשר לחתונה במקום אחד
+        </Text>
       </View>
 
       <View style={styles.statsCard}>
@@ -41,27 +43,27 @@ export default function HomeScreen({ navigation }: Props) {
         <PrimaryButton
           title="ייבוא אנשי קשר"
           icon="📥"
-          onPress={() => navigation.navigate('Import')}
+          onPress={() => navigation.navigate("Import")}
         />
         <PrimaryButton
           title={`צפייה ברשימה (${stats.total})`}
           icon="👥"
           variant="secondary"
-          onPress={() => navigation.navigate('Contacts')}
+          onPress={() => navigation.navigate("Contacts")}
           style={{ marginTop: 12 }}
         />
         <PrimaryButton
           title="סיכום ופילוחים"
           icon="📊"
           variant="secondary"
-          onPress={() => navigation.navigate('Summary')}
+          onPress={() => navigation.navigate("Summary")}
           style={{ marginTop: 12 }}
         />
         <PrimaryButton
           title="ייצוא לאקסל ל-iPlan"
           icon="📤"
           variant="secondary"
-          onPress={() => navigation.navigate('Export')}
+          onPress={() => navigation.navigate("Export")}
           style={{ marginTop: 12 }}
         />
       </View>
@@ -74,7 +76,15 @@ export default function HomeScreen({ navigation }: Props) {
   );
 }
 
-function Stat({ label, value, color }: { label: string; value: number; color?: string }) {
+function Stat({
+  label,
+  value,
+  color,
+}: {
+  label: string;
+  value: number;
+  color?: string;
+}) {
   return (
     <View style={statStyles.wrap}>
       <Text style={[statStyles.value, !!color && { color }]}>{value}</Text>
@@ -90,11 +100,11 @@ function Divider() {
 const statStyles = StyleSheet.create({
   wrap: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
   },
   value: {
     fontSize: 22,
-    fontWeight: '800',
+    fontWeight: "800",
     color: colors.text,
   },
   label: {
@@ -115,7 +125,7 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   hero: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingVertical: 18,
   },
   heroEmoji: {
@@ -123,7 +133,7 @@ const styles = StyleSheet.create({
   },
   heroTitle: {
     fontSize: 28,
-    fontWeight: '800',
+    fontWeight: "800",
     color: colors.text,
     marginTop: 6,
   },
@@ -131,10 +141,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.textMuted,
     marginTop: 4,
-    textAlign: 'center',
+    textAlign: "center",
   },
   statsCard: {
-    flexDirection: 'row',
+    flexDirection: "row",
     backgroundColor: colors.card,
     borderRadius: 16,
     paddingVertical: 16,
@@ -146,9 +156,9 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   privacyCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: colors.secondary,
     borderRadius: 12,
     padding: 14,
@@ -161,6 +171,6 @@ const styles = StyleSheet.create({
   privacyText: {
     color: colors.text,
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });

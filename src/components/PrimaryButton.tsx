@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   TouchableOpacity,
   Text,
@@ -6,13 +6,13 @@ import {
   ActivityIndicator,
   StyleProp,
   ViewStyle,
-} from 'react-native';
-import { colors } from '../theme/colors';
+} from "react-native";
+import { colors } from "../theme/colors";
 
 interface Props {
   title: string;
   onPress: () => void;
-  variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
+  variant?: "primary" | "secondary" | "danger" | "ghost";
   loading?: boolean;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
@@ -22,7 +22,7 @@ interface Props {
 export function PrimaryButton({
   title,
   onPress,
-  variant = 'primary',
+  variant = "primary",
   loading,
   disabled,
   style,
@@ -30,18 +30,18 @@ export function PrimaryButton({
 }: Props) {
   const containerStyle = [
     styles.base,
-    variant === 'primary' && styles.primary,
-    variant === 'secondary' && styles.secondary,
-    variant === 'danger' && styles.danger,
-    variant === 'ghost' && styles.ghost,
+    variant === "primary" && styles.primary,
+    variant === "secondary" && styles.secondary,
+    variant === "danger" && styles.danger,
+    variant === "ghost" && styles.ghost,
     (disabled || loading) && styles.disabled,
     style,
   ];
 
   const textStyle = [
     styles.text,
-    variant === 'secondary' && styles.textSecondary,
-    variant === 'ghost' && styles.textGhost,
+    variant === "secondary" && styles.textSecondary,
+    variant === "ghost" && styles.textGhost,
   ];
 
   return (
@@ -52,10 +52,16 @@ export function PrimaryButton({
       activeOpacity={0.8}
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'primary' || variant === 'danger' ? '#fff' : colors.primary} />
+        <ActivityIndicator
+          color={
+            variant === "primary" || variant === "danger"
+              ? "#fff"
+              : colors.primary
+          }
+        />
       ) : (
         <Text style={textStyle}>
-          {icon ? `${icon}  ` : ''}
+          {icon ? `${icon}  ` : ""}
           {title}
         </Text>
       )}
@@ -68,9 +74,9 @@ const styles = StyleSheet.create({
     minHeight: 56,
     paddingHorizontal: 24,
     borderRadius: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
   },
   primary: {
     backgroundColor: colors.primary,
@@ -84,15 +90,15 @@ const styles = StyleSheet.create({
     backgroundColor: colors.error,
   },
   ghost: {
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
   },
   disabled: {
     opacity: 0.5,
   },
   text: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 17,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   textSecondary: {
     color: colors.primary,

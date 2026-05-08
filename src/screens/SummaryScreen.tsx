@@ -1,13 +1,19 @@
-import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation/AppNavigator';
-import { colors } from '../theme/colors';
-import { useContacts } from '../storage/ContactsContext';
-import { Group, GROUP_LABELS, Side, SIDE_LABELS } from '../types/Contact';
-import { PrimaryButton } from '../components/PrimaryButton';
+import React, { useMemo } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../navigation/AppNavigator";
+import { colors } from "../theme/colors";
+import { useContacts } from "../storage/ContactsContext";
+import { Group, GROUP_LABELS, Side, SIDE_LABELS } from "../types/Contact";
+import { PrimaryButton } from "../components/PrimaryButton";
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Summary'>;
+type Props = NativeStackScreenProps<RootStackParamList, "Summary">;
 
 export default function SummaryScreen({ navigation }: Props) {
   const { contacts } = useContacts();
@@ -18,7 +24,12 @@ export default function SummaryScreen({ navigation }: Props) {
     const invalid = contacts.filter((c) => c.isInvalid).length;
     const duplicates = contacts.filter((c) => c.isDuplicate).length;
 
-    const bySide: Record<Side, number> = { groom: 0, bride: 0, both: 0, unknown: 0 };
+    const bySide: Record<Side, number> = {
+      groom: 0,
+      bride: 0,
+      both: 0,
+      unknown: 0,
+    };
     const byGroup: Record<Group, number> = {
       family: 0,
       friends: 0,
@@ -35,13 +46,13 @@ export default function SummaryScreen({ navigation }: Props) {
   }, [contacts]);
 
   const sideColor = (s: Side) =>
-    s === 'groom'
+    s === "groom"
       ? colors.groom
-      : s === 'bride'
-      ? colors.bride
-      : s === 'both'
-      ? colors.both
-      : colors.unknown;
+      : s === "bride"
+        ? colors.bride
+        : s === "both"
+          ? colors.both
+          : colors.unknown;
 
   const maxSide = Math.max(1, ...Object.values(stats.bySide));
   const maxGroup = Math.max(1, ...Object.values(stats.byGroup));
@@ -59,7 +70,7 @@ export default function SummaryScreen({ navigation }: Props) {
           color={colors.warning}
           onPress={
             stats.duplicates > 0
-              ? () => navigation.navigate('Contacts', { filter: 'duplicates' })
+              ? () => navigation.navigate("Contacts", { filter: "duplicates" })
               : undefined
           }
         />
@@ -69,7 +80,7 @@ export default function SummaryScreen({ navigation }: Props) {
           color={colors.error}
           onPress={
             stats.invalid > 0
-              ? () => navigation.navigate('Contacts', { filter: 'invalid' })
+              ? () => navigation.navigate("Contacts", { filter: "invalid" })
               : undefined
           }
         />
@@ -77,7 +88,7 @@ export default function SummaryScreen({ navigation }: Props) {
 
       <Text style={styles.sectionTitle}>פילוח לפי צד</Text>
       <View style={styles.card}>
-        {(['groom', 'bride', 'both', 'unknown'] as Side[]).map((s) => (
+        {(["groom", "bride", "both", "unknown"] as Side[]).map((s) => (
           <BarRow
             key={s}
             label={SIDE_LABELS[s]}
@@ -90,21 +101,23 @@ export default function SummaryScreen({ navigation }: Props) {
 
       <Text style={styles.sectionTitle}>פילוח לפי קבוצה</Text>
       <View style={styles.card}>
-        {(['family', 'friends', 'work', 'army', 'other'] as Group[]).map((g) => (
-          <BarRow
-            key={g}
-            label={GROUP_LABELS[g]}
-            value={stats.byGroup[g]}
-            max={maxGroup}
-            color={colors.primary}
-          />
-        ))}
+        {(["family", "friends", "work", "army", "other"] as Group[]).map(
+          (g) => (
+            <BarRow
+              key={g}
+              label={GROUP_LABELS[g]}
+              value={stats.byGroup[g]}
+              max={maxGroup}
+              color={colors.primary}
+            />
+          ),
+        )}
       </View>
 
       <PrimaryButton
         title="ייצוא לאקסל"
         icon="📤"
-        onPress={() => navigation.navigate('Export')}
+        onPress={() => navigation.navigate("Export")}
         style={{ marginTop: 16 }}
         disabled={stats.total === 0}
       />
@@ -153,7 +166,13 @@ function BarRow({
       </View>
       <View style={styles.barTrack}>
         <View
-          style={[styles.barFill, { width: `${value === 0 ? 0 : Math.max(pct, 4)}%`, backgroundColor: color }]}
+          style={[
+            styles.barFill,
+            {
+              width: `${value === 0 ? 0 : Math.max(pct, 4)}%`,
+              backgroundColor: color,
+            },
+          ]}
         />
       </View>
     </View>
@@ -166,7 +185,7 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
   bigStatsRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 10,
   },
   bigStat: {
@@ -174,14 +193,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderRadius: 14,
     paddingVertical: 18,
-    alignItems: 'center',
+    alignItems: "center",
     marginHorizontal: 5,
     borderWidth: 1,
     borderColor: colors.border,
   },
   bigStatValue: {
     fontSize: 32,
-    fontWeight: '800',
+    fontWeight: "800",
     color: colors.text,
   },
   bigStatLabel: {
@@ -193,16 +212,16 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: colors.primary,
     marginTop: 4,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
     color: colors.text,
     marginTop: 18,
     marginBottom: 8,
     marginHorizontal: 5,
-    textAlign: 'right',
+    textAlign: "right",
   },
   card: {
     backgroundColor: colors.card,
@@ -216,28 +235,28 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   barHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 4,
   },
   barLabel: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
     color: colors.text,
   },
   barValue: {
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: "700",
     color: colors.text,
   },
   barTrack: {
     height: 10,
     backgroundColor: colors.secondary,
     borderRadius: 5,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   barFill: {
-    height: '100%',
+    height: "100%",
     borderRadius: 5,
   },
 });

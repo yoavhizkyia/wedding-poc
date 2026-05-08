@@ -1,5 +1,5 @@
-import { Contact } from '../types/Contact';
-import { normalizePhone } from './phoneNormalizer';
+import { Contact } from "../types/Contact";
+import { normalizePhone } from "./phoneNormalizer";
 
 export function markDuplicates(contacts: Contact[]): Contact[] {
   const counts = new Map<string, number>();
@@ -33,13 +33,15 @@ export function mergeContacts(items: Contact[]): Contact {
     const score = (c: Contact) =>
       (c.fullName ? 1 : 0) +
       (c.notes ? 1 : 0) +
-      (c.side !== 'unknown' ? 1 : 0) +
-      (c.group !== 'other' ? 1 : 0);
+      (c.side !== "unknown" ? 1 : 0) +
+      (c.group !== "other" ? 1 : 0);
     return score(b) - score(a);
   });
 
   const primary = sorted[0];
-  const notes = Array.from(new Set(sorted.map((c) => c.notes).filter(Boolean))).join(' | ');
+  const notes = Array.from(
+    new Set(sorted.map((c) => c.notes).filter(Boolean)),
+  ).join(" | ");
 
   return {
     ...primary,
