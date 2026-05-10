@@ -8,9 +8,10 @@ interface Props {
   onPress?: () => void;
   color?: string;
   count?: number;
+  compact?: boolean;
 }
 
-export function Chip({ label, selected, onPress, color, count }: Props) {
+export function Chip({ label, selected, onPress, color, count, compact }: Props) {
   const bg = selected ? color || colors.primary : colors.card;
   const fg = selected ? "#fff" : colors.text;
   const borderCol = selected ? bg : colors.border;
@@ -19,14 +20,21 @@ export function Chip({ label, selected, onPress, color, count }: Props) {
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.7}
-      style={[styles.chip, { backgroundColor: bg, borderColor: borderCol }]}
+      style={[
+        compact ? styles.chipCompact : styles.chip,
+        { backgroundColor: bg, borderColor: borderCol },
+      ]}
       disabled={!onPress}
     >
-      <Text style={[styles.text, { color: fg }]}>{label}</Text>
+      <Text
+        style={[compact ? styles.textCompact : styles.text, { color: fg }]}
+      >
+        {label}
+      </Text>
       {typeof count === "number" && (
         <View
           style={[
-            styles.badge,
+            compact ? styles.badgeCompact : styles.badge,
             {
               backgroundColor: selected
                 ? "rgba(255,255,255,0.25)"
@@ -34,7 +42,14 @@ export function Chip({ label, selected, onPress, color, count }: Props) {
             },
           ]}
         >
-          <Text style={[styles.badgeText, { color: fg }]}>{count}</Text>
+          <Text
+            style={[
+              compact ? styles.badgeTextCompact : styles.badgeText,
+              { color: fg },
+            ]}
+          >
+            {count}
+          </Text>
         </View>
       )}
     </TouchableOpacity>
@@ -52,8 +67,21 @@ const styles = StyleSheet.create({
     marginEnd: 8,
     marginBottom: 8,
   },
+  chipCompact: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 14,
+    borderWidth: 1,
+    marginEnd: 6,
+  },
   text: {
     fontSize: 14,
+    fontWeight: "600",
+  },
+  textCompact: {
+    fontSize: 12,
     fontWeight: "600",
   },
   badge: {
@@ -65,8 +93,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  badgeCompact: {
+    marginStart: 5,
+    minWidth: 18,
+    height: 18,
+    paddingHorizontal: 5,
+    borderRadius: 9,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   badgeText: {
     fontSize: 12,
+    fontWeight: "700",
+  },
+  badgeTextCompact: {
+    fontSize: 10,
     fontWeight: "700",
   },
 });

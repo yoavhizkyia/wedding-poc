@@ -17,7 +17,8 @@ import { RootStackParamList } from "../navigation/AppNavigator";
 import { colors } from "../theme/colors";
 import { PrimaryButton } from "../components/PrimaryButton";
 import { useContacts } from "../storage/ContactsContext";
-import { Contact } from "../types/Contact";
+import { Contact, Side, SIDE_LABELS } from "../types/Contact";
+import { Chip } from "../components/Chip";
 import {
   isValidIsraeliMobile,
   normalizePhone,
@@ -89,6 +90,7 @@ function NativeImport({ navigation }: Props) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [search, setSearch] = useState("");
   const [onlyValid, setOnlyValid] = useState(true);
+  const [defaultSide, setDefaultSide] = useState<Side>("groom");
 
   const requestAndLoad = useCallback(async () => {
     setLoading(true);
@@ -195,7 +197,7 @@ function NativeImport({ navigation }: Props) {
         firstName: c.firstName,
         lastName: c.lastName,
         phone: c.phone,
-        side: "unknown",
+        side: defaultSide,
         group: "other",
         notes: "",
         isSelected: false,
@@ -247,6 +249,32 @@ function NativeImport({ navigation }: Props) {
 
   return (
     <View style={styles.container}>
+      <View style={styles.sideCard}>
+        <Text style={styles.sideCardTitle}>צד ברירת מחדל לייבוא</Text>
+        <Text style={styles.sideCardHint}>
+          כל מי שייובא בפעולה הזו ישוייך אוטומטית לצד שנבחר
+        </Text>
+        <View style={styles.sideChipsRow}>
+          {(["groom", "bride", "both", "unknown"] as Side[]).map((s) => (
+            <Chip
+              key={s}
+              label={SIDE_LABELS[s]}
+              selected={defaultSide === s}
+              onPress={() => setDefaultSide(s)}
+              color={
+                s === "groom"
+                  ? colors.groom
+                  : s === "bride"
+                    ? colors.bride
+                    : s === "both"
+                      ? colors.both
+                      : colors.unknown
+              }
+            />
+          ))}
+        </View>
+      </View>
+
       <View style={styles.searchRow}>
         <TextInput
           value={search}
@@ -325,7 +353,7 @@ function NativeImport({ navigation }: Props) {
         <PrimaryButton
           title={
             selected.size > 0
-              ? `ייבא ${selected.size} אנשי קשר`
+              ? `ייבא ${selected.size} כצד ${SIDE_LABELS[defaultSide]}`
               : "ייבא אנשי קשר"
           }
           onPress={handleImport}
@@ -368,6 +396,32 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 16,
     marginTop: 12,
+  },
+  sideCard: {
+    marginHorizontal: 14,
+    marginTop: 12,
+    backgroundColor: colors.card,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: 12,
+  },
+  sideCardTitle: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: colors.text,
+    textAlign: "right",
+  },
+  sideCardHint: {
+    fontSize: 12,
+    color: colors.textMuted,
+    textAlign: "right",
+    marginTop: 2,
+    marginBottom: 8,
+  },
+  sideChipsRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
   },
   searchRow: {
     paddingHorizontal: 14,

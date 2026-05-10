@@ -5,6 +5,7 @@ import { RootStackParamList } from "../navigation/AppNavigator";
 import { colors } from "../theme/colors";
 import { PrimaryButton } from "../components/PrimaryButton";
 import { useContacts } from "../storage/ContactsContext";
+import { hasCyrillic } from "../utils/cyrillicTransliterator";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Home">;
 
@@ -18,6 +19,17 @@ export default function HomeScreen({ navigation }: Props) {
     const invalid = contacts.filter((c) => c.isInvalid).length;
     return { total, valid, duplicates, invalid };
   }, [contacts]);
+
+  const cyrillicCount = useMemo(
+    () =>
+      contacts.filter(
+        (c) =>
+          hasCyrillic(c.fullName) ||
+          hasCyrillic(c.firstName) ||
+          hasCyrillic(c.lastName),
+      ).length,
+    [contacts],
+  );
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -67,6 +79,22 @@ export default function HomeScreen({ navigation }: Props) {
           style={{ marginTop: 12 }}
         />
       </View>
+
+      {cyrillicCount > 0 && (
+        <View style={styles.translateCard}>
+          <Text style={styles.translateTitle}>
+            🌐 {cyrillicCount} שמות בקיריליצה
+          </Text>
+          <Text style={styles.translateText}>
+            הפוך אותם לעברית בקליק עם הצעות תעתיק שניתן לערוך
+          </Text>
+          <PrimaryButton
+            title="תרגום שמות מרוסית"
+            onPress={() => navigation.navigate("Translate")}
+            style={{ marginTop: 10 }}
+          />
+        </View>
+      )}
 
       <View style={styles.privacyCard}>
         <Text style={styles.privacyIcon}>🔒</Text>
@@ -154,6 +182,26 @@ const styles = StyleSheet.create({
   },
   actions: {
     marginTop: 6,
+  },
+  translateCard: {
+    marginTop: 18,
+    backgroundColor: colors.card,
+    borderRadius: 14,
+    padding: 14,
+    borderWidth: 1.5,
+    borderColor: colors.accent,
+  },
+  translateTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: colors.text,
+    textAlign: "right",
+  },
+  translateText: {
+    fontSize: 13,
+    color: colors.textMuted,
+    textAlign: "right",
+    marginTop: 2,
   },
   privacyCard: {
     flexDirection: "row",

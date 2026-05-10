@@ -44,7 +44,7 @@ function makeFileName(): string {
 }
 
 async function exportNative(contacts: Contact[]): Promise<ExportResult> {
-  const FileSystem = await import("expo-file-system");
+  const FileSystem = await import("expo-file-system/legacy");
   const Sharing = await import("expo-sharing");
   const { workbook, rowCount } = buildWorkbook(contacts);
 

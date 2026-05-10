@@ -13,13 +13,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigation/AppNavigator";
 import { colors } from "../theme/colors";
 import { useContacts } from "../storage/ContactsContext";
-import {
-  Contact,
-  GROUP_LABELS,
-  SIDE_LABELS,
-  Side,
-  Group,
-} from "../types/Contact";
+import { Contact, GROUP_LABELS, Side, Group } from "../types/Contact";
 import { ContactItem } from "../components/ContactItem";
 import { ContactEditModal } from "../components/ContactEditModal";
 import { Chip } from "../components/Chip";
@@ -30,9 +24,16 @@ import { PrimaryButton } from "../components/PrimaryButton";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Contacts">;
 
-type SideFilter = Side | "all";
+type SideFilter = "all" | "groom" | "bride" | "other";
 type GroupFilter = Group | "all";
 type FlagFilter = "all" | "invalid" | "duplicates";
+
+function matchesSideFilter(side: Side, filter: SideFilter): boolean {
+  if (filter === "all") return true;
+  if (filter === "groom") return side === "groom";
+  if (filter === "bride") return side === "bride";
+  return side === "both" || side === "unknown";
+}
 
 export default function ContactsScreen({ navigation, route }: Props) {
   const {
@@ -92,7 +93,7 @@ export default function ContactsScreen({ navigation, route }: Props) {
   const filtered = useMemo(() => {
     const q = search.trim();
     return contacts.filter((c) => {
-      if (sideFilter !== "all" && c.side !== sideFilter) return false;
+      if (!matchesSideFilter(c.side, sideFilter)) return false;
       if (groupFilter !== "all" && c.group !== groupFilter) return false;
       if (flagFilter === "invalid" && !c.isInvalid) return false;
       if (flagFilter === "duplicates" && !c.isDuplicate) return false;
@@ -171,15 +172,29 @@ export default function ContactsScreen({ navigation, route }: Props) {
   };
 
   const sideCounts = useMemo(() => {
-    const counts: Record<Side, number> = {
-      groom: 0,
-      bride: 0,
-      both: 0,
-      unknown: 0,
-    };
-    for (const c of contacts) counts[c.side]++;
+    const counts = { groom: 0, bride: 0, other: 0 };
+    for (const c of contacts) {
+      if (c.side === "groom") counts.groom++;
+      else if (c.side === "bride") counts.bride++;
+      else counts.other++;
+    }
     return counts;
   }, [contacts]);
+
+  const groupCounts = useMemo(() => {
+    const counts: Record<Group, number> = {
+      family: 0,
+      friends: 0,
+      work: 0,
+      army: 0,
+      other: 0,
+    };
+    for (const c of contacts) counts[c.group]++;
+    return counts;
+  }, [contacts]);
+
+  const filtersActive =
+    flagFilter !== "all" || sideFilter !== "all" || groupFilter !== "all";
 
   return (
     <View style={styles.container}>
@@ -194,72 +209,104 @@ export default function ContactsScreen({ navigation, route }: Props) {
         />
       </View>
 
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.filtersRow}
-      >
-        <Chip
-          label="הכל"
-          selected={
-            flagFilter === "all" &&
-            sideFilter === "all" &&
-            groupFilter === "all"
-          }
-          onPress={() => {
-            setFlagFilter("all");
-            setSideFilter("all");
-            setGroupFilter("all");
-          }}
-          count={contacts.length}
-        />
-        <Chip
-          label="שגויים"
-          selected={flagFilter === "invalid"}
-          onPress={() =>
-            setFlagFilter(flagFilter === "invalid" ? "all" : "invalid")
-          }
-          color={colors.error}
-          count={contacts.filter((c) => c.isInvalid).length}
-        />
-        <Chip
-          label="כפולים"
-          selected={flagFilter === "duplicates"}
-          onPress={() =>
-            setFlagFilter(flagFilter === "duplicates" ? "all" : "duplicates")
-          }
-          color={colors.warning}
-          count={contacts.filter((c) => c.isDuplicate).length}
-        />
-        {(["groom", "bride", "both", "unknown"] as Side[]).map((s) => (
+      <View style={styles.filtersBlock}>
+        <View style={styles.statusRow}>
           <Chip
-            key={s}
-            label={SIDE_LABELS[s]}
-            selected={sideFilter === s}
-            onPress={() => setSideFilter(sideFilter === s ? "all" : s)}
-            color={
-              s === "groom"
-                ? colors.groom
-                : s === "bride"
-                  ? colors.bride
-                  : s === "both"
-                    ? colors.both
-                    : colors.unknown
-            }
-            count={sideCounts[s]}
+            compact
+            label={`הכל · ${contacts.length}`}
+            selected={!filtersActive}
+            onPress={() => {
+              setFlagFilter("all");
+              setSideFilter("all");
+              setGroupFilter("all");
+            }}
           />
-        ))}
-        {(["family", "friends", "work", "army", "other"] as Group[]).map(
-          (g) => (
+          <Chip
+            compact
+            label="שגויים"
+            selected={flagFilter === "invalid"}
+            onPress={() =>
+              setFlagFilter(flagFilter === "invalid" ? "all" : "invalid")
+            }
+            color={colors.error}
+            count={contacts.filter((c) => c.isInvalid).length}
+          />
+          <Chip
+            compact
+            label="כפולים"
+            selected={flagFilter === "duplicates"}
+            onPress={() =>
+              setFlagFilter(flagFilter === "duplicates" ? "all" : "duplicates")
+            }
+            color={colors.warning}
+            count={contacts.filter((c) => c.isDuplicate).length}
+          />
+        </View>
+
+        <View style={styles.filterLine}>
+          <Text style={styles.filterLabel}>צד</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.filterChips}
+          >
             <Chip
-              key={g}
-              label={GROUP_LABELS[g]}
-              selected={groupFilter === g}
-              onPress={() => setGroupFilter(groupFilter === g ? "all" : g)}
+              compact
+              label="חתן"
+              selected={sideFilter === "groom"}
+              onPress={() =>
+                setSideFilter(sideFilter === "groom" ? "all" : "groom")
+              }
+              color={colors.groom}
+              count={sideCounts.groom}
             />
-          ),
-        )}
-      </ScrollView>
+            <Chip
+              compact
+              label="כלה"
+              selected={sideFilter === "bride"}
+              onPress={() =>
+                setSideFilter(sideFilter === "bride" ? "all" : "bride")
+              }
+              color={colors.bride}
+              count={sideCounts.bride}
+            />
+            <Chip
+              compact
+              label="אחר"
+              selected={sideFilter === "other"}
+              onPress={() =>
+                setSideFilter(sideFilter === "other" ? "all" : "other")
+              }
+              color={colors.both}
+              count={sideCounts.other}
+            />
+          </ScrollView>
+        </View>
+
+        <View style={styles.filterLine}>
+          <Text style={styles.filterLabel}>קרבה</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.filterChips}
+          >
+            {(["family", "friends", "work", "army", "other"] as Group[]).map(
+              (g) => (
+                <Chip
+                  key={g}
+                  compact
+                  label={GROUP_LABELS[g]}
+                  selected={groupFilter === g}
+                  onPress={() =>
+                    setGroupFilter(groupFilter === g ? "all" : g)
+                  }
+                  count={groupCounts[g]}
+                />
+              ),
+            )}
+          </ScrollView>
+        </View>
+      </View>
 
       <FlatList
         data={filtered}
@@ -345,9 +392,33 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.text,
   },
-  filtersRow: {
+  filtersBlock: {
     paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingTop: 8,
+    paddingBottom: 4,
+  },
+  statusRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginBottom: 6,
+  },
+  filterLine: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  filterLabel: {
+    width: 42,
+    fontSize: 12,
+    fontWeight: "700",
+    color: colors.textMuted,
+    textAlign: "right",
+    marginEnd: 4,
+  },
+  filterChips: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 2,
   },
   empty: {
     paddingTop: 80,

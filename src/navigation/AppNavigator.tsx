@@ -5,6 +5,7 @@ import ImportScreen from "../screens/ImportScreen";
 import ContactsScreen from "../screens/ContactsScreen";
 import SummaryScreen from "../screens/SummaryScreen";
 import ExportScreen from "../screens/ExportScreen";
+import TranslateScreen from "../screens/TranslateScreen";
 import { colors } from "../theme/colors";
 
 export type RootStackParamList = {
@@ -13,6 +14,7 @@ export type RootStackParamList = {
   Contacts: { filter?: "invalid" | "duplicates" } | undefined;
   Summary: undefined;
   Export: undefined;
+  Translate: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -53,6 +55,11 @@ export default function AppNavigator() {
         name="Export"
         component={ExportScreen}
         options={{ title: "ייצוא לאקסל" }}
+      />
+      <Stack.Screen
+        name="Translate"
+        component={TranslateScreen}
+        options={{ title: "תרגום שמות" }}
       />
     </Stack.Navigator>
   );
